@@ -1,0 +1,17 @@
+# Propwise Ingestion Engine Dependencies
+
+# Database
+sqlalchemy>=2.0.0
+pymysql>=1.1.0
+mysql-replication>=0.45.0  # For binlog CDC (real-time capture)
+
+# Object Storage
+minio>=7.2.0
+
+# Data Processing
+pandas>=2.0.0
+pyarrow>=14.0.0
+
+# Utilities
+python-dateutil>=2.8.0
+

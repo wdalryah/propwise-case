@@ -1,0 +1,203 @@
+{
+  "expectation_suite_name": "sales_suite",
+  "ge_cloud_id": null,
+  "meta": {
+    "great_expectations_version": "0.18.0",
+    "created_by": "Propwise Data Engineering",
+    "description": "Data quality expectations for sales dataset"
+  },
+  "expectations": [
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "min_value": 50,
+        "max_value": null
+      },
+      "meta": {
+        "dimension": "validity",
+        "severity": "critical",
+        "is_blocking": true,
+        "notes": "Sales table must have at least 50 records"
+      }
+    },
+    {
+      "expectation_type": "expect_table_columns_to_match_set",
+      "kwargs": {
+        "column_set": [
+          "id", "lead_id", "date_of_reservation", "date_of_contract",
+          "date_of_handover", "property_type", "usage_type", "area",
+          "price", "net_area", "owner_id", "agent_id", "unit_code",
+          "sales_category"
+        ],
+        "exact_match": false
+      },
+      "meta": {
+        "dimension": "completeness",
+        "severity": "warning",
+        "notes": "Expected columns in sales dataset"
+      }
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {
+        "column": "id"
+      },
+      "meta": {
+        "dimension": "completeness",
+        "severity": "critical",
+        "is_blocking": true
+      }
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {
+        "column": "lead_id"
+      },
+      "meta": {
+        "dimension": "completeness",
+        "severity": "critical",
+        "is_blocking": true,
+        "notes": "Lead reference is required for referential integrity"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "id"
+      },
+      "meta": {
+        "dimension": "completeness",
+        "severity": "critical",
+        "is_blocking": true,
+        "threshold": 1.0
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "lead_id"
+      },
+      "meta": {
+        "dimension": "completeness",
+        "severity": "critical",
+        "is_blocking": true,
+        "threshold": 1.0,
+        "notes": "Every sale must have a lead reference"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_unique",
+      "kwargs": {
+        "column": "id",
+        "mostly": 0.99
+      },
+      "meta": {
+        "dimension": "uniqueness",
+        "severity": "warning",
+        "threshold": 0.99
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "price",
+        "mostly": 0.95
+      },
+      "meta": {
+        "dimension": "completeness",
+        "severity": "error",
+        "threshold": 0.95,
+        "notes": "Price should be present for at least 95% of sales"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_match_regex",
+      "kwargs": {
+        "column": "price",
+        "regex": "^[0-9]*\\.?[0-9]*$",
+        "mostly": 0.95
+      },
+      "meta": {
+        "dimension": "validity",
+        "severity": "error",
+        "notes": "Price must be numeric"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "date_of_reservation",
+        "mostly": 0.90
+      },
+      "meta": {
+        "dimension": "completeness",
+        "severity": "warning",
+        "threshold": 0.90
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "property_type",
+        "mostly": 0.90
+      },
+      "meta": {
+        "dimension": "completeness",
+        "severity": "warning",
+        "threshold": 0.90
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "area",
+        "mostly": 0.85
+      },
+      "meta": {
+        "dimension": "completeness",
+        "severity": "info",
+        "threshold": 0.85
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "sales_category",
+        "value_set": ["Primary", "Resale", "primary", "resale", "PRIMARY", "RESALE", ""],
+        "mostly": 0.90
+      },
+      "meta": {
+        "dimension": "validity",
+        "severity": "warning",
+        "notes": "Sales category should be Primary or Resale"
+      }
+    },
+    {
+      "expectation_type": "expect_column_value_lengths_to_be_between",
+      "kwargs": {
+        "column": "unit_code",
+        "min_value": 0,
+        "max_value": 100,
+        "mostly": 0.99
+      },
+      "meta": {
+        "dimension": "validity",
+        "severity": "info"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_match_regex",
+      "kwargs": {
+        "column": "net_area",
+        "regex": "^[0-9]*\\.?[0-9]*$",
+        "mostly": 0.90
+      },
+      "meta": {
+        "dimension": "validity",
+        "severity": "info",
+        "notes": "Net area should be numeric"
+      }
+    }
+  ]
+}
+

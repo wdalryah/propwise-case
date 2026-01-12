@@ -1,0 +1,53 @@
+{
+  "job_name": "curated_dwh_load",
+  "description": "Load curated data from staging (MinIO) to DWH (PostgreSQL) via Trino SQL",
+  "trino_host": "trino",
+  "trino_port": 8080,
+  "trino_user": "airflow",
+  
+  "sql_scripts": [
+    {
+      "order": 1,
+      "name": "create_staging_views",
+      "file": "01_create_staging_views.sql",
+      "description": "Create external tables over MinIO staging parquet",
+      "run_once": true
+    },
+    {
+      "order": 2,
+      "name": "load_dimensions",
+      "file": "02_load_dimensions.sql",
+      "description": "Load dimension tables with SCD-2 pattern"
+    },
+    {
+      "order": 3,
+      "name": "load_fact_lead",
+      "file": "03_load_fact_lead.sql",
+      "description": "Load fact_lead with dimension lookups"
+    },
+    {
+      "order": 4,
+      "name": "load_fact_sale",
+      "file": "04_load_fact_sale.sql",
+      "description": "Load fact_sale with dimension lookups"
+    },
+    {
+      "order": 5,
+      "name": "log_completion",
+      "file": "05_log_completion.sql",
+      "description": "Log ETL completion to metadata table"
+    }
+  ],
+  
+  "catalogs": {
+    "hive": {
+      "description": "MinIO staging bucket via Hive connector",
+      "bucket": "staging"
+    },
+    "dwh": {
+      "description": "PostgreSQL DWH via PostgreSQL connector",
+      "database": "propwise_dwh"
+    }
+  }
+}
+

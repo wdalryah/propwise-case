@@ -1,0 +1,3 @@
+# Spark additional JARs
+# Add connector JARs here for MySQL, S3, Iceberg, etc.
+

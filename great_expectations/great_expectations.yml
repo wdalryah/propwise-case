@@ -1,0 +1,99 @@
+# Great Expectations Configuration
+# Propwise Data Quality Framework
+# ================================
+
+config_version: 3.0
+
+# Data Sources
+datasources:
+  # MinIO Raw Data Source (via Pandas)
+  minio_raw:
+    class_name: Datasource
+    module_name: great_expectations.datasource
+    execution_engine:
+      class_name: PandasExecutionEngine
+      module_name: great_expectations.execution_engine
+    data_connectors:
+      raw_data_connector:
+        class_name: RuntimeDataConnector
+        module_name: great_expectations.datasource.data_connector
+        batch_identifiers:
+          - batch_id
+          - table_name
+
+  # MinIO Staging Data Source
+  minio_staging:
+    class_name: Datasource
+    module_name: great_expectations.datasource
+    execution_engine:
+      class_name: PandasExecutionEngine
+      module_name: great_expectations.execution_engine
+    data_connectors:
+      staging_data_connector:
+        class_name: RuntimeDataConnector
+        module_name: great_expectations.datasource.data_connector
+        batch_identifiers:
+          - batch_id
+          - table_name
+
+# Expectation Stores
+config_variables_file_path: uncommitted/config_variables.yml
+
+stores:
+  # Expectation Store - PostgreSQL
+  expectations_store:
+    class_name: ExpectationsStore
+    store_backend:
+      class_name: DatabaseStoreBackend
+      credentials:
+        host: localhost
+        port: 5433
+        username: metadata_user
+        password: metadata123
+        database: propwise_metadata
+        drivername: postgresql
+
+  # Validation Results Store - PostgreSQL  
+  validations_store:
+    class_name: ValidationsStore
+    store_backend:
+      class_name: DatabaseStoreBackend
+      credentials:
+        host: localhost
+        port: 5433
+        username: metadata_user
+        password: metadata123
+        database: propwise_metadata
+        drivername: postgresql
+
+  # Checkpoint Store - File System
+  checkpoint_store:
+    class_name: CheckpointStore
+    store_backend:
+      class_name: TupleFilesystemStoreBackend
+      base_directory: checkpoints/
+
+  # Evaluation Parameter Store
+  evaluation_parameter_store:
+    class_name: EvaluationParameterStore
+
+expectations_store_name: expectations_store
+validations_store_name: validations_store
+checkpoint_store_name: checkpoint_store
+evaluation_parameter_store_name: evaluation_parameter_store
+
+# Data Docs Sites
+data_docs_sites:
+  local_site:
+    class_name: SiteBuilder
+    show_how_to_buttons: true
+    store_backend:
+      class_name: TupleFilesystemStoreBackend
+      base_directory: uncommitted/data_docs/local_site/
+    site_index_builder:
+      class_name: DefaultSiteIndexBuilder
+
+# Anonymous Usage Statistics
+anonymous_usage_statistics:
+  enabled: false
+

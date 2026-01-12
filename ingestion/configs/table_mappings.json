@@ -1,0 +1,160 @@
+{
+    "rules": [
+        {
+            "rule-type": "selection",
+            "rule-id": "1",
+            "rule-name": "select-leads-table",
+            "object-locator": {
+                "schema-name": "propwise_source",
+                "table-name": "leads"
+            },
+            "rule-action": "explicit",
+            "cdc-config": {
+                "tracking_column": "updated_at",
+                "delete_detection": {
+                    "column": "status_name",
+                    "delete_value": "DELETED"
+                }
+            }
+        },
+        {
+            "rule-type": "selection",
+            "rule-id": "2",
+            "rule-name": "select-sales-table",
+            "object-locator": {
+                "schema-name": "propwise_source",
+                "table-name": "sales"
+            },
+            "rule-action": "explicit",
+            "cdc-config": {
+                "tracking_column": "reservation_update_date",
+                "delete_detection": null
+            }
+        },
+        {
+            "rule-type": "transformation",
+            "rule-id": "100",
+            "rule-name": "add-extraction-time",
+            "rule-target": "column",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "%"
+            },
+            "rule-action": "add-column",
+            "value": "extraction_time",
+            "expression": "CURRENT_TIMESTAMP",
+            "data-type": {
+                "type": "timestamp"
+            }
+        },
+        {
+            "rule-type": "transformation",
+            "rule-id": "101",
+            "rule-name": "add-global-primary-key-leads",
+            "rule-target": "column",
+            "object-locator": {
+                "schema-name": "propwise_source",
+                "table-name": "leads"
+            },
+            "rule-action": "add-column",
+            "value": "gpk",
+            "expression": "$id||'~'||EXTRACTION_TIMESTAMP",
+            "data-type": {
+                "type": "string",
+                "length": "100"
+            }
+        },
+        {
+            "rule-type": "transformation",
+            "rule-id": "102",
+            "rule-name": "add-global-primary-key-sales",
+            "rule-target": "column",
+            "object-locator": {
+                "schema-name": "propwise_source",
+                "table-name": "sales"
+            },
+            "rule-action": "add-column",
+            "value": "gpk",
+            "expression": "$id||'~'||EXTRACTION_TIMESTAMP",
+            "data-type": {
+                "type": "string",
+                "length": "100"
+            }
+        },
+        {
+            "rule-type": "transformation",
+            "rule-id": "103",
+            "rule-name": "add-env-column",
+            "rule-target": "column",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "%"
+            },
+            "rule-action": "add-column",
+            "value": "env",
+            "expression": "'test'",
+            "data-type": {
+                "type": "string",
+                "length": "20"
+            }
+        },
+        {
+            "rule-type": "transformation",
+            "rule-id": "104",
+            "rule-name": "add-region-column",
+            "rule-target": "column",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "%"
+            },
+            "rule-action": "add-column",
+            "value": "region",
+            "expression": "'local'",
+            "data-type": {
+                "type": "string",
+                "length": "20"
+            }
+        },
+        {
+            "rule-type": "transformation",
+            "rule-id": "105",
+            "rule-name": "add-operation-column",
+            "rule-target": "column",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "%"
+            },
+            "rule-action": "add-column",
+            "value": "op",
+            "expression": "OPERATION_TYPE",
+            "data-type": {
+                "type": "string",
+                "length": "1"
+            },
+            "description": "Operation type: I=Insert, U=Update, D=Delete"
+        },
+        {
+            "rule-type": "transformation",
+            "rule-id": "200",
+            "rule-name": "add-raw-prefix-to-tables",
+            "rule-target": "table",
+            "object-locator": {
+                "schema-name": "%",
+                "table-name": "%"
+            },
+            "rule-action": "add-prefix",
+            "value": "raw_"
+        },
+        {
+            "rule-type": "transformation",
+            "rule-id": "201",
+            "rule-name": "rename-schema-to-propwise",
+            "rule-target": "schema",
+            "object-locator": {
+                "schema-name": "propwise_source"
+            },
+            "rule-action": "rename",
+            "value": "propwise"
+        }
+    ]
+}

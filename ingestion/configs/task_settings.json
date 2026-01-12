@@ -1,0 +1,66 @@
+{
+    "task_name": "propwise-mysql-to-minio-ingestion",
+    "task_description": "Ingest data from MySQL source to MinIO data lake (raw-data bucket)",
+    
+    "source": {
+        "type": "mysql",
+        "connection": {
+            "host": "localhost",
+            "port": 3306,
+            "database": "propwise_source",
+            "username": "source_user",
+            "password": "source123"
+        },
+        "docker_host": "mysql",
+        "docker_port": 3306
+    },
+    
+    "target": {
+        "type": "minio",
+        "connection": {
+            "endpoint": "localhost:9000",
+            "access_key": "minioadmin",
+            "secret_key": "minioadmin123",
+            "secure": false,
+            "bucket": "raw-data"
+        },
+        "docker_endpoint": "minio:9000"
+    },
+    
+    "task_settings": {
+        "full_load": {
+            "enabled": true,
+            "batch_size": 10000,
+            "file_format": "csv",
+            "partition_by": null,
+            "max_files_per_partition": 1
+        },
+        "cdc": {
+            "enabled": true,
+            "mode": "timestamp",
+            "tracking_column": "updated_at",
+            "initial_watermark": null,
+            "poll_interval_seconds": 60,
+            "file_format": "csv"
+        },
+        "audit_columns": {
+            "extraction_time": true,
+            "gpk": true,
+            "env": "test",
+            "region": "local"
+        },
+        "table_prefix": "raw_",
+        "logging": {
+            "level": "INFO",
+            "log_to_file": true,
+            "log_path": "logs/ingestion.log"
+        },
+        "error_handling": {
+            "max_retries": 3,
+            "retry_delay_seconds": 5,
+            "on_error": "continue"
+        }
+    },
+    
+    "table_mappings_file": "table_mappings.json"
+}

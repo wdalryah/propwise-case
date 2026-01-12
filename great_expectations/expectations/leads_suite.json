@@ -1,0 +1,220 @@
+{
+  "expectation_suite_name": "leads_suite",
+  "ge_cloud_id": null,
+  "meta": {
+    "great_expectations_version": "0.18.0",
+    "created_by": "Propwise Data Engineering",
+    "description": "Data quality expectations for leads dataset"
+  },
+  "expectations": [
+    {
+      "expectation_type": "expect_table_row_count_to_be_between",
+      "kwargs": {
+        "min_value": 100,
+        "max_value": null
+      },
+      "meta": {
+        "dimension": "validity",
+        "severity": "critical",
+        "is_blocking": true,
+        "notes": "Leads table must have at least 100 records"
+      }
+    },
+    {
+      "expectation_type": "expect_table_columns_to_match_set",
+      "kwargs": {
+        "column_set": [
+          "id", "date_of_last_request", "buyer", "seller", 
+          "best_time_to_call", "budget", "created_at", "updated_at",
+          "user_id", "location", "date_of_last_contact", "status_name",
+          "commercial", "do_not_call", "lead_type_id", "customer_id",
+          "method_of_contact", "lead_source", "campaign", "lead_type"
+        ],
+        "exact_match": false
+      },
+      "meta": {
+        "dimension": "completeness",
+        "severity": "warning",
+        "notes": "Expected columns in leads dataset"
+      }
+    },
+    {
+      "expectation_type": "expect_column_to_exist",
+      "kwargs": {
+        "column": "id"
+      },
+      "meta": {
+        "dimension": "completeness",
+        "severity": "critical",
+        "is_blocking": true
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "id"
+      },
+      "meta": {
+        "dimension": "completeness",
+        "severity": "critical",
+        "is_blocking": true,
+        "threshold": 1.0,
+        "notes": "Lead ID must never be null"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_unique",
+      "kwargs": {
+        "column": "id",
+        "mostly": 0.99
+      },
+      "meta": {
+        "dimension": "uniqueness",
+        "severity": "warning",
+        "threshold": 0.99,
+        "notes": "At least 99% of IDs should be unique"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "status_name",
+        "mostly": 0.90
+      },
+      "meta": {
+        "dimension": "completeness",
+        "severity": "warning",
+        "threshold": 0.90,
+        "notes": "Status should be present for at least 90% of records"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "lead_source",
+        "mostly": 0.85
+      },
+      "meta": {
+        "dimension": "completeness",
+        "severity": "info",
+        "threshold": 0.85
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_be_null",
+      "kwargs": {
+        "column": "created_at",
+        "mostly": 0.95
+      },
+      "meta": {
+        "dimension": "completeness",
+        "severity": "warning",
+        "threshold": 0.95
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "buyer",
+        "value_set": ["TRUE", "FALSE", "True", "False", "true", "false", "1", "0", ""],
+        "mostly": 0.95
+      },
+      "meta": {
+        "dimension": "validity",
+        "severity": "warning",
+        "notes": "Buyer flag should be boolean-like"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "seller",
+        "value_set": ["TRUE", "FALSE", "True", "False", "true", "false", "1", "0", ""],
+        "mostly": 0.95
+      },
+      "meta": {
+        "dimension": "validity",
+        "severity": "warning",
+        "notes": "Seller flag should be boolean-like"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "commercial",
+        "value_set": ["TRUE", "FALSE", "True", "False", "true", "false", "1", "0", ""],
+        "mostly": 0.95
+      },
+      "meta": {
+        "dimension": "validity",
+        "severity": "warning"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_be_in_set",
+      "kwargs": {
+        "column": "do_not_call",
+        "value_set": ["TRUE", "FALSE", "True", "False", "true", "false", "1", "0", ""],
+        "mostly": 0.95
+      },
+      "meta": {
+        "dimension": "validity",
+        "severity": "warning"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_match_regex",
+      "kwargs": {
+        "column": "budget",
+        "regex": "^[0-9]*\\.?[0-9]*$",
+        "mostly": 0.80
+      },
+      "meta": {
+        "dimension": "validity",
+        "severity": "warning",
+        "notes": "Budget should be numeric (allowing empty)"
+      }
+    },
+    {
+      "expectation_type": "expect_column_value_lengths_to_be_between",
+      "kwargs": {
+        "column": "location",
+        "min_value": 0,
+        "max_value": 500,
+        "mostly": 0.99
+      },
+      "meta": {
+        "dimension": "validity",
+        "severity": "info",
+        "notes": "Location should be reasonable length, not JSON blob"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_match_regex",
+      "kwargs": {
+        "column": "location",
+        "regex": "^\\s*[{\\[].*[}\\]]\\s*$",
+        "mostly": 0.99
+      },
+      "meta": {
+        "dimension": "validity",
+        "severity": "warning",
+        "notes": "Location should NOT contain JSON data"
+      }
+    },
+    {
+      "expectation_type": "expect_column_values_to_not_match_regex",
+      "kwargs": {
+        "column": "status_name",
+        "regex": "^\\s*[{\\[].*[}\\]]\\s*$",
+        "mostly": 0.99
+      },
+      "meta": {
+        "dimension": "validity",
+        "severity": "warning",
+        "notes": "Status should NOT contain JSON data"
+      }
+    }
+  ]
+}
+

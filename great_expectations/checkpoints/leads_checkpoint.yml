@@ -1,0 +1,45 @@
+# Great Expectations Checkpoint for Leads Data
+# =============================================
+# This checkpoint validates leads data against the leads_suite expectations
+
+name: leads_checkpoint
+config_version: 1.0
+template_name: null
+module_name: great_expectations.checkpoint
+class_name: Checkpoint
+run_name_template: "leads_validation_%Y%m%d_%H%M%S"
+
+expectation_suite_name: leads_suite
+
+action_list:
+  # Store validation results
+  - name: store_validation_result
+    action:
+      class_name: StoreValidationResultAction
+  
+  # Store evaluation parameters
+  - name: store_evaluation_params
+    action:
+      class_name: StoreEvaluationParametersAction
+  
+  # Update Data Docs
+  - name: update_data_docs
+    action:
+      class_name: UpdateDataDocsAction
+      site_names:
+        - local_site
+
+evaluation_parameters: {}
+
+runtime_configuration: {}
+
+validations:
+  - batch_request:
+      datasource_name: minio_raw
+      data_connector_name: raw_data_connector
+      data_asset_name: leads
+      batch_identifiers:
+        batch_id: default
+        table_name: leads
+    expectation_suite_name: leads_suite
+

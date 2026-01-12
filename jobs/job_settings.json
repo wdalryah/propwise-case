@@ -1,0 +1,109 @@
+{
+  "job_settings": {
+    "name": "propwise_log_compaction",
+    "description": "Log compaction job for Propwise data platform",
+    "version": "1.0.0",
+    
+    "execution": {
+      "mode": "batch",
+      "schedule": "0 6 * * *",
+      "timeout_minutes": 120,
+      "retry_count": 3,
+      "retry_delay_seconds": 300
+    },
+    
+    "resources": {
+      "executor_memory": "2g",
+      "executor_cores": 2,
+      "num_executors": 2,
+      "driver_memory": "1g"
+    },
+    
+    "logging": {
+      "level": "INFO",
+      "log_to_file": true,
+      "log_path": "logs/processing",
+      "enable_metrics": true
+    },
+    
+    "data_quality": {
+      "enabled": true,
+      "fail_on_critical": true,
+      "null_threshold_percent": 50,
+      "duplicate_threshold_percent": 5
+    }
+  },
+  
+  "connections": {
+    "source": {
+      "type": "minio",
+      "endpoint": "localhost:9000",
+      "docker_endpoint": "minio:9000",
+      "access_key": "minioadmin",
+      "secret_key": "minioadmin123",
+      "bucket": "raw-data",
+      "path_prefix": "propwise"
+    },
+    
+    "target": {
+      "type": "minio",
+      "endpoint": "localhost:9000",
+      "docker_endpoint": "minio:9000",
+      "access_key": "minioadmin",
+      "secret_key": "minioadmin123",
+      "bucket": "raw-data",
+      "path_prefix": "propwise"
+    },
+    
+    "metadata": {
+      "type": "postgresql",
+      "host": "localhost",
+      "docker_host": "postgres-metadata",
+      "port": 5434,
+      "database": "pipeline_metadata",
+      "user": "metadata_user",
+      "password": "metadata123"
+    }
+  },
+  
+  "processing_stages": {
+    "staging": {
+      "enabled": true,
+      "config_path": "processing/staging/configs",
+      "output_format": "parquet",
+      "compression": "snappy",
+      "input_prefix": "raw_",
+      "output_prefix": "processed_"
+    },
+    
+    "processed": {
+      "enabled": true,
+      "config_path": "processing/processed/configs",
+      "output_format": "parquet",
+      "compression": "snappy"
+    },
+    
+    "curated": {
+      "enabled": false,
+      "config_path": "processing/curated/configs",
+      "output_format": "parquet",
+      "compression": "snappy"
+    }
+  },
+  
+  "tables": [
+    {
+      "name": "leads",
+      "config": "01_leads.json",
+      "priority": 1,
+      "enabled": true
+    },
+    {
+      "name": "sales",
+      "config": "02_sales.json",
+      "priority": 2,
+      "enabled": true
+    }
+  ]
+}
+

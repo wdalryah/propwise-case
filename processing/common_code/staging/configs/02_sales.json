@@ -1,0 +1,220 @@
+{
+  "landing_zone_table": "raw_sales",
+  "landing_zone_bucket": "raw-data",
+  "landing_zone_path": "propwise/raw_sales",
+  "target_bucket": "staging",
+  "target_path": "processed_sales",
+  "target_table": "processed_sales",
+  "primary_key": "id",
+  "file_format": "parquet",
+
+  "schema_evolution": {
+    "mode": "flexible",
+    "description": "Controls how schema changes are handled",
+    
+    "mode_options": {
+      "strict": "Only mapped columns allowed, reject unmapped",
+      "flexible": "Apply mappings + keep unmapped columns as-is (DEFAULT)",
+      "pass_through": "No mappings, ingest all columns as-is"
+    },
+    
+    "unmapped_columns": "keep",
+    "unmapped_options": {
+      "keep": "Keep new columns as-is (schema expansion friendly)",
+      "drop": "Drop new columns (strict schema)"
+    },
+    
+    "missing_columns": "null",
+    "missing_options": {
+      "error": "Fail job if mapped column is missing from source",
+      "warn": "Log warning, skip missing columns",
+      "null": "Add missing columns with NULL values (DEFAULT)",
+      "skip": "Silently skip missing columns"
+    },
+    
+    "log_schema_drift": true
+  },
+
+  "partitions": {
+    "1": {
+      "col": "sale_date",
+      "name": "year",
+      "type": "int",
+      "comment": "Year partition from date_of_reservation (86.7% valid, 68 months)"
+    },
+    "2": {
+      "col": "sale_date",
+      "name": "month",
+      "type": "int",
+      "comment": "Month partition from date_of_reservation"
+    }
+  },
+
+  "merge_cols": {
+    "1": "extraction_time",
+    "2": "reservation_update_date"
+  },
+
+  "timestamp_cols": {
+    "1": {
+      "col": "sale_date",
+      "format": "M/d/yyyy H:mm"
+    },
+    "2": {
+      "col": "reservation_update_date",
+      "format": "M/d/yyyy H:mm"
+    },
+    "3": {
+      "col": "contract_date",
+      "format": "M/d/yyyy H:mm"
+    },
+    "4": {
+      "col": "extraction_time",
+      "format": "yyyy-MM-dd'T'HH:mm:ss.SSSSSS"
+    }
+  },
+
+  "mapping": {
+    "1": {
+      "input_column": "op",
+      "input_type": "string",
+      "output_column": "op",
+      "output_type": "string",
+      "comment": "The operation invoked: I = Insert, D = Delete, U = Update."
+    },
+    "2": {
+      "input_column": "extraction_time",
+      "input_type": "string",
+      "output_column": "extraction_time",
+      "output_type": "timestamp",
+      "comment": "The datetime the data was extracted from the database & loaded into data lake."
+    },
+    "3": {
+      "input_column": "gpk",
+      "input_type": "string",
+      "output_column": "gpk",
+      "output_type": "string",
+      "comment": "Global primary key: id~extraction_timestamp."
+    },
+    "4": {
+      "input_column": "env",
+      "input_type": "string",
+      "output_column": "env",
+      "output_type": "string",
+      "comment": "Environment: test, prod, etc."
+    },
+    "5": {
+      "input_column": "region",
+      "input_type": "string",
+      "output_column": "region",
+      "output_type": "string",
+      "comment": "Region: local, us-east-1, etc."
+    },
+    "6": {
+      "input_column": "id",
+      "input_type": "string",
+      "output_column": "sale_id",
+      "output_type": "string",
+      "comment": "The unique identifier for the sale."
+    },
+    "7": {
+      "input_column": "lead_id",
+      "input_type": "string",
+      "output_column": "lead_id",
+      "output_type": "string",
+      "comment": "Foreign key to the leads table."
+    },
+    "8": {
+      "input_column": "unit_value",
+      "input_type": "string",
+      "output_column": "unit_value",
+      "output_type": "float",
+      "comment": "The value of the unit."
+    },
+    "9": {
+      "input_column": "unit_location",
+      "input_type": "string",
+      "output_column": "unit_location",
+      "output_type": "string",
+      "comment": "Location of the unit."
+    },
+    "10": {
+      "input_column": "expected_value",
+      "input_type": "string",
+      "output_column": "expected_value",
+      "output_type": "float",
+      "comment": "Expected sale value."
+    },
+    "11": {
+      "input_column": "actual_value",
+      "input_type": "string",
+      "output_column": "actual_value",
+      "output_type": "float",
+      "comment": "Actual sale value."
+    },
+    "12": {
+      "input_column": "date_of_reservation",
+      "input_type": "string",
+      "output_column": "sale_date",
+      "output_type": "timestamp",
+      "comment": "Date of reservation/sale."
+    },
+    "13": {
+      "input_column": "reservation_update_date",
+      "input_type": "string",
+      "output_column": "reservation_update_date",
+      "output_type": "timestamp",
+      "comment": "Date when reservation was last updated."
+    },
+    "14": {
+      "input_column": "date_of_contraction",
+      "input_type": "string",
+      "output_column": "contract_date",
+      "output_type": "timestamp",
+      "comment": "Date of contract signing."
+    },
+    "15": {
+      "input_column": "property_type_id",
+      "input_type": "string",
+      "output_column": "property_type_id",
+      "output_type": "string",
+      "comment": "Property type identifier."
+    },
+    "16": {
+      "input_column": "area_id",
+      "input_type": "string",
+      "output_column": "area_id",
+      "output_type": "string",
+      "comment": "Area identifier."
+    },
+    "17": {
+      "input_column": "compound_id",
+      "input_type": "string",
+      "output_column": "compound_id",
+      "output_type": "string",
+      "comment": "Compound/development identifier."
+    },
+    "18": {
+      "input_column": "sale_category",
+      "input_type": "string",
+      "output_column": "sale_category",
+      "output_type": "string",
+      "comment": "Category of the sale (Primary, Developer Commercial, etc.)."
+    },
+    "19": {
+      "input_column": "years_of_payment",
+      "input_type": "string",
+      "output_column": "payment_years",
+      "output_type": "int",
+      "comment": "Number of years for payment plan."
+    },
+    "20": {
+      "input_column": "property_type",
+      "input_type": "string",
+      "output_column": "property_type",
+      "output_type": "string",
+      "comment": "Type of property (Apartment, Villa, Office, etc.)."
+    }
+  }
+}
+
